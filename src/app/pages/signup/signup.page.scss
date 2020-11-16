@@ -1,0 +1,5 @@
+ion-label.required::after {
+    content: "*";
+    font-weight: bold;
+    color: rgb(235, 68, 90);
+}
