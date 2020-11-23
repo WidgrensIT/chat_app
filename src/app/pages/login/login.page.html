@@ -18,51 +18,51 @@
 
   <ion-slide *ngIf="!loggedInBefore">
     <div class="container-login">
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            <h1>Chatapp</h1>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-list>
-
-              <ion-item>
-                <ion-icon name="person-circle-outline"></ion-icon>
-                <ion-input name="user" type="text" required placeholder="Username"></ion-input>
-              </ion-item>
-              <br />
-              <ion-item>
-                <ion-icon name="lock-closed-outline"></ion-icon>
-                <ion-input name="password" type="password" required placeholder="Password"></ion-input>
-              </ion-item>
-
-            </ion-list>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-button type="submit" fill="solid" expand="full">
-              Login
-            </ion-button>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-label>
-              <h3><a [routerLink]="['/forgot-password']">Forgot your password?</a></h3>
-            </ion-label>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col>
-            <ion-label>
-              <h3><a [routerLink]="['/signup']">Create account</a></h3>
-            </ion-label>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <h1>Chatapp</h1>
+            </ion-col>
+          </ion-row>
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <ion-row>
+              <ion-col>
+                <ion-list>
+                  <ion-item>
+                    <ion-icon name="person-circle-outline"></ion-icon>
+                    <ion-input formControlName="username" type="text" required placeholder="Username"></ion-input>
+                  </ion-item>
+                  <br />
+                  <ion-item>
+                    <ion-icon name="lock-closed-outline"></ion-icon>
+                    <ion-input formControlName="password" type="password" required placeholder="Password"></ion-input>
+                  </ion-item>
+                </ion-list>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-button type="submit" fill="solid" expand="full">
+                  Login
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </form>
+          <ion-row>
+            <ion-col>
+              <ion-label>
+                <h3><a [routerLink]="['/forgot-password']">Forgot your password?</a></h3>
+              </ion-label>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-label>
+                <h3><a [routerLink]="['/signup']">Create account</a></h3>
+              </ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
     </div>
   </ion-slide>
   <ion-slide *ngIf="loggedInBefore">

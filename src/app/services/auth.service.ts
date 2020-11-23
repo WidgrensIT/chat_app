@@ -1,37 +1,47 @@
-import { Plugins } from '@capacitor/core';
-const { Storage } = Plugins;
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+
+import { get, set, remove } from './storage.service';
+
+import { User } from '../models/user.model';
+
+
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
+    private currentUserSubject: BehaviorSubject<User>;
+    public currentUser: Observable<User>;
 
-    constructor() { }
-
-    async setObject(key: string, value: Object): Promise<void> {
-        return await Storage.set({
-            'key': key,
-            'value': JSON.stringify(value)
-        });
+    constructor(private http: HttpClient) {
+        let userObj = await get('currentUser');
+        this.currentUserSubject = new BehaviorSubject<User>(userObj);
+        this.currentUser = this.currentUserSubject.asObservable();
     }
 
-    async getObject(key: string): Promise<Object | null> {
-        const ret = await Storage.get({ 'key': key });
-        if(ret == null) return null;
-        return JSON.parse(ret.value);
+    public get currentUserValue(): User {
+        return this.currentUserSubject.value;
     }
 
-
-    async removeObject(key: string): Promise<void> {
-        return await Storage.remove({ 'key': key });
+    login(username: string, password: string) {
+        return this.http.post<any>(`${environment.apiUrl}/login`, {username: username, password: password})
+            .pipe(map(user => {
+                await set('currentUser', user);
+                this.currentUserSubject.next(user);
+                return user;
+            }));
     }
 
-    async keys(): Promise< {'keys': string[]} > {
-        return await Storage.keys();
+    registerDevice(deviceId: string): void {
+        this.http.put<any>(`${environment.apiUrl}/device/${deviceId}`, {});
     }
 
-    async clear(): Promise<void> {
-        await Storage.clear();
+    logout() {
+        await remove('currentUser');
+        this.currentUserSubject.next(null);
     }
 }
