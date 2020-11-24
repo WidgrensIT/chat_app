@@ -18,21 +18,24 @@ export class AuthService {
     public currentUser: Observable<User>;
 
     constructor(private http: HttpClient) {
-        let userObj = await get('currentUser');
-        this.currentUserSubject = new BehaviorSubject<User>(userObj);
-        this.currentUser = this.currentUserSubject.asObservable();
+        get('currentUser').then((userObj) => {
+            this.currentUserSubject = new BehaviorSubject<User>(userObj);
+            this.currentUser = this.currentUserSubject.asObservable();
+        });
     }
 
     public get currentUserValue(): User {
-        return this.currentUserSubject.value;
+        if(this.currentUserSubject)
+            return this.currentUserSubject.value;
     }
 
     login(username: string, password: string) {
         return this.http.post<any>(`${environment.apiUrl}/login`, {username: username, password: password})
             .pipe(map(user => {
-                await set('currentUser', user);
-                this.currentUserSubject.next(user);
-                return user;
+                set('currentUser', user).then(() => {
+                    this.currentUserSubject.next(user);
+                    return user;
+                });
             }));
     }
 
@@ -41,7 +44,6 @@ export class AuthService {
     }
 
     logout() {
-        await remove('currentUser');
-        this.currentUserSubject.next(null);
+        remove('currentUser').then(() => this.currentUserSubject.next(null));
     }
 }

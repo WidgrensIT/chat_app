@@ -42,7 +42,9 @@ export class LoginPage implements OnInit {
             username: ['', Validators.required],
             password: ['', Validators.required]
         });
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+        let returnUrl = this.route.snapshot.queryParams['returnUrlz'] || '/';
+        this.returnUrl = returnUrl.split("?")[0];
+        console.log(this.returnUrl);
     }
 
     onSubmit() {

@@ -5,7 +5,7 @@ export class User {
     email?: string;
     avatar?: string;
     password: string;
-    token?: string;
+    access_token?: string;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);

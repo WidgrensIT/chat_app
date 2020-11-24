@@ -1,14 +1,23 @@
 <ion-header>
-    <ion-toolbar>
-      <ion-title>ChatApp</ion-title>
-      <ion-buttons end>
-        <button ion-button>
-          <ion-icon name="menu"></ion-icon>
-        </button>
-      </ion-buttons>
-    </ion-toolbar>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Contacts</ion-title>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content>
-
+<ion-content fullscreen>
+  <ion-list>
+    <ion-item *ngFor="let contact of contacts" (click)="openChat(contact);">
+      <ion-avatar slot="start">
+        <ngx-avatar gravatarId="{{contact.email}}"
+                    name="{{contact.username}}"></ngx-avatar>
+      </ion-avatar>
+      <ion-label>
+        <h2>{{contact.username}}</h2>
+        <p>Last online: 10mins ago</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
