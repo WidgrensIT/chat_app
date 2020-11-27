@@ -13,29 +13,25 @@ export const RECONNECT_INTERVAL = environment.reconnectInterval;
 export class ChatService {
 
     private socket$;
-    private messagesSubject$ = new Subject();
-    public messages$ = this.messagesSubject$.pipe(switchAll(), catchError(e => { throw e }));
-    public deviceId: string;
+    private messages: any;
 
     constructor() { }
 
-    public connect(cfg: { reconnect: boolean } = { reconnect: false }): void {
+    public connect(user: string, device: string, cfg: { reconnect: boolean } = { reconnect: false }): void {
         if(!this.socket$ || this.socket$.closed) {
             console.log("Connecting");
-            this.socket$ = this.getNewWebSocket();
-            const messages = this.socket$.pipe(cfg.reconnect ? this.reconnect : o => o,
-                                               tap({
-                                                   error: error => console.log(error),
-                                               }), catchError(_ => EMPTY))
-            //toDO only next an observable if a new subscription was made double-check this
-            this.messagesSubject$.next(messages);
+            this.socket$ = this.getNewWebSocket(user, device);
+            this.socket$.subscribe(
+                (data) => {
+                    console.log(data);
+                });
         } else {
             console.log("Not connecting");
         }
     }
 
-    private getNewWebSocket() {
-        let url = WS_ENDPOINT + this.deviceId + '/ws';
+    private getNewWebSocket(user: string, device: string) {
+        let url = WS_ENDPOINT + '/device/' + device + '/user/' + user + '/ws';
         console.log("Connecting to ", url);
         return webSocket({
             url: url,
@@ -48,15 +44,9 @@ export class ChatService {
                 next: () => {
                     console.log('connection closed');
                     this.socket$ = undefined;
-                    this.connect({reconnect: true});
                 }
             },
         });
-    }
-
-    private reconnect(observable: Observable<any>): Observable<any> {
-        return observable.pipe(retryWhen(errors => errors.pipe(tap(val => console.log('Trying to reconnect', val)),
-                                                               delayWhen(_ => timer(RECONNECT_INTERVAL)))));
     }
 
     sendMessage(msg: any) {

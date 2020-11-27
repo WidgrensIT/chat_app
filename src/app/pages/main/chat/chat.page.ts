@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatService } from '../../../services/chat.service';
+import { get } from '../../../services/storage.service';
 
 
 @Component({
@@ -13,8 +14,10 @@ export class ChatPage implements OnInit {
 
     ngOnInit() {
         console.log("Yay");
-        this.chatService.deviceId = '1';
-        this.chatService.connect({reconnect: false});
+        get('user').then((user) => {
+            console.log(user);
+            this.chatService.connect(user.id, '2', {reconnect: false});
+        });
 
     }
 

@@ -18,7 +18,7 @@ export class AuthService {
     public currentUser: Observable<User>;
 
     constructor(private http: HttpClient) {
-        get('currentUser').then((userObj) => {
+        get('token').then((userObj) => {
             this.currentUserSubject = new BehaviorSubject<User>(userObj);
             this.currentUser = this.currentUserSubject.asObservable();
         });
@@ -31,10 +31,12 @@ export class AuthService {
 
     login(username: string, password: string) {
         return this.http.post<any>(`${environment.apiUrl}/login`, {username: username, password: password})
-            .pipe(map(user => {
-                set('currentUser', user).then(() => {
-                    this.currentUserSubject.next(user);
-                    return user;
+            .pipe(map(access_obj => {
+                set('token', access_obj.access_token).then(() => {
+                    set('user', JSON.parse(atob(access_obj.access_token.split('.')[1]))).then(() => {
+                        this.currentUserSubject.next(access_obj);
+                        return access_obj;
+                    });
                 });
             }));
     }
@@ -44,6 +46,6 @@ export class AuthService {
     }
 
     logout() {
-        remove('currentUser').then(() => this.currentUserSubject.next(null));
+        remove('token').then(() => this.currentUserSubject.next(null));
     }
 }
