@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: ChatPage
+  },
+  {
+    path: 'messages',
+    loadChildren: () => import('./messages/messages.module').then( m => m.MessagesPageModule)
   }
 ];
 

@@ -2,11 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { UserService } from '../../services/user.service';
+import { ChatService } from '../../services/chat.service';
+
 import { NavController } from '@ionic/angular';
 
-import { ChatPage } from './chat/chat.page';
+import { ChatPage } from '../chat/chat.page';
 
 import { User } from '../../models/user.model';
+import { Chat } from '../../models/chat';
+import { Participant } from '../../models/participant';
+
+import { ParamsService } from '../../services/params.service';
+
 
 @Component({
     selector: 'app-main',
@@ -19,7 +26,9 @@ export class MainPage implements OnInit {
 
     constructor(private userService: UserService,
                 private router: Router,
-                private navCtrl: NavController
+                private navCtrl: NavController,
+                private paramsService: ParamsService,
+                private chatService: ChatService
                ) { }
 
     ngOnInit() {
@@ -27,7 +36,14 @@ export class MainPage implements OnInit {
     }
 
     openChat(user: User) {
-        this.router.navigate(['/chat', { user: user}]);
+        let participants: Participant[] = [new Participant({id: user.id})];
+        let newChat = new Chat({'name': user.username, 'description': '-', 'type': '1to1', 'participants': participants});
+
+        this.chatService.createChat(newChat)
+            .subscribe((data: Chat) => {
+                this.paramsService.set({user: user, chat: data});
+                this.router.navigate(['/tabs/chat/messages']);
+            });
     }
 
 }

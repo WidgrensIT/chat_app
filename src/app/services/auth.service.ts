@@ -18,25 +18,27 @@ export class AuthService {
     public currentUser: Observable<User>;
 
     constructor(private http: HttpClient) {
-        get('token').then((userObj) => {
+        get('user').then((userObj) => {
             this.currentUserSubject = new BehaviorSubject<User>(userObj);
             this.currentUser = this.currentUserSubject.asObservable();
         });
     }
 
     public get currentUserValue(): User {
-        if(this.currentUserSubject)
+        if(this.currentUserSubject) {
+            console.log(this.currentUserSubject.value);
             return this.currentUserSubject.value;
+        }
     }
 
     login(username: string, password: string) {
         return this.http.post<any>(`${environment.apiUrl}/login`, {username: username, password: password})
             .pipe(map(access_obj => {
-                set('token', access_obj.access_token).then(() => {
-                    set('user', JSON.parse(atob(access_obj.access_token.split('.')[1]))).then(() => {
-                        this.currentUserSubject.next(access_obj);
-                        return access_obj;
-                    });
+                let userObject = JSON.parse(atob(access_obj.access_token.split('.')[1]));
+                userObject.access_token = access_obj.access_token;
+                set('user', userObject).then(() => {
+                    this.currentUserSubject.next(userObject);
+                    return userObject;
                 });
             }));
     }

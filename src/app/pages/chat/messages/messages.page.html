@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Chat with {{ currentUser.username }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="chatbox">
+    <div class="message-area">
+      <div class="message" *ngFor="let message of messages" [ngClass]="getClasses(message.id)">
+        <p>{{message.payload}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div slot="fixed" class="chatbox">
+    <div class="input-area">
+      <form (submit)="sendMessage()" name="messageForm" #messageForm="ngForm">
+        <ion-input [disabled]="sending" type="text" name="message" id="message" [(ngModel)]="message" placeholder="Say something..."></ion-input>
+        <button>
+          <ion-icon name="send"></ion-icon>
+        </button>
+      </form>
+    </div>
+  </div>
+
+</ion-content>

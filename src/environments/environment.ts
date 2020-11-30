@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-    wsEndpoint: 'ws://localhost:8090/v1',
+    wsEndpoint: 'ws://localhost:8090/client',
     apiUrl: 'http://localhost:8090/v1',
     apiUrlClient: 'http://localhost:8090/client',
     reconnectInterval: 2000,
