@@ -18,4 +18,11 @@ export class UserService {
     public fetchUsers() {
         return this.http.get<any>(`${environment.apiUrlClient}/user`);
     }
-}
+
+    public signup(username: string, password: string, email: string, phoneNumber: string) {
+      return this.http.post<any>(`${environment.apiUrl}/signup`, {username: username,
+                                                                  password: password,
+                                                                  email: email,
+                                                                  phoneNumber: phoneNumber})
+   }
+  }
