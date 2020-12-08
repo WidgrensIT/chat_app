@@ -27,13 +27,16 @@ export class SignupPage implements OnInit {
     ngOnInit() {
         this.submitForm = this.formBuilder.group({
             username: ['', Validators.required],
-            password: ['', Validators.required]
+            password: ['', Validators.required],
+            email: [''],
+            phoneNumber: ['']
         });
         let returnUrl = '/';
         console.log(returnUrl);
     }
 
     onSubmit() {
+        console.log("on submit sign up");
         this.submitted = true;
         if(this.submitForm.invalid) {
             return;
@@ -45,7 +48,7 @@ export class SignupPage implements OnInit {
             .pipe(first())
             .subscribe(
                 data => {
-                    this.router.navigate([this.returnUrl]);
+                    this.router.navigate(['/']);
                 },
                 error => {
                     this.error = error;

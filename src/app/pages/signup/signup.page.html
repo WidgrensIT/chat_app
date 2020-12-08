@@ -11,32 +11,28 @@
   <div class="container">
     <form [formGroup]="submitForm" (ngSubmit)="onSubmit()">
       <ion-item lines="full">
-        <ion-label position="floating" class="required">Username</ion-label>
-        <ion-input type="text" required></ion-input>
+        <ion-input formControlName="username" type="text" required placeholder="Username"></ion-input>
       </ion-item>
 
       <ion-item lines="full">
-        <ion-label position="floating" class="required">Password</ion-label>
-        <ion-input type="password" required></ion-input>
+        <ion-input formControlName="password" type="password" required placeholder="Password"></ion-input>
       </ion-item>
 
       <ion-item lines="full">
-        <ion-label position="floating">Email</ion-label>
-        <ion-input type="text"></ion-input>
+        <ion-input formControlName="email" type="text" placeholder="Email"></ion-input>
       </ion-item>
 
       <ion-item lines="full">
-        <ion-label position="floating">Phone</ion-label>
-        <ion-input type="text"></ion-input>
+        <ion-input formControlName="phoneNumber" type="text" placeholder="Phone number"></ion-input>
       </ion-item>
-
+      <ion-row>
+        <ion-col>
+          <ion-button type="submit" color="danger" expand="block">Sign Up</ion-button>
+        </ion-col>
+      </ion-row>
 
   </form>
 
 </div>
-  <ion-row>
-    <ion-col>
-      <ion-button type="submit" color="danger" expand="block">Sign Up</ion-button>
-    </ion-col>
-  </ion-row>
+
 </ion-content>
