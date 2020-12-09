@@ -9,9 +9,8 @@
 
 
 
-<ion-content fullscreen class="ion-padding" scroll-y="false">
+<ion-content class="ion-padding" scroll-y="false" *ngIf="chats.length == 0 && !loading">
       <ion-slides>
-
         <ion-slide>
           <div class="slide">
             <img src="/assets/empty.png" />
@@ -20,4 +19,20 @@
           </div>
         </ion-slide>
       </ion-slides>
+</ion-content>
+<ion-content fullscreen *ngIf="chats.length > 0 && !loading">
+      <ion-list>
+        <ion-item *ngFor="let chat of chats; let i = index" (click)="openChat(chats[i]);">
+          <ion-avatar slot="start">
+            <ngx-avatar gravatarId="{{chat.participants[0].email}}"
+                        name="{{chat.participants[0].username}}" *ngIf="chat.participants.length == 1" size="45"></ngx-avatar>
+            <ngx-avatar name="Group Chat" *ngIf="chat.participants.length > 1" size="45"></ngx-avatar>
+            <ion-badge *ngIf="chat.participants.length > 1" color="accent">{{ chat.participants.length }}</ion-badge>
+          </ion-avatar>
+          <ion-label>
+            <h2>{{chat.name}}</h2>
+            <p>{{chat.participants | joiner}}
+          </ion-label>
+        </ion-item>
+      </ion-list>
 </ion-content>

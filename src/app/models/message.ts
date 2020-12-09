@@ -4,6 +4,7 @@ export class Message {
     timestamp?: string;
     payload?: any;
     chatId: string;
+    msgType?: string;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);

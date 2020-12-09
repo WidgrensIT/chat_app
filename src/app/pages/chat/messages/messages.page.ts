@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { PopoverController } from '@ionic/angular';
+import { MenuComponent } from './menu/menu.component';
 
 import { ParamsService } from '../../../services/params.service';
 import { ChatService } from '../../../services/chat.service';
@@ -17,7 +19,6 @@ import { User } from '../../../models/user.model';
 export class MessagesPage implements OnInit {
 
     private currentChat: Chat;
-    private currentUser: User;
     private message: string;
 
     private messages: Message[] = [];
@@ -27,13 +28,13 @@ export class MessagesPage implements OnInit {
     constructor(private route: ActivatedRoute,
                 private paramsService: ParamsService,
                 private chatService: ChatService,
-                private messageService: MessageService
+                private messageService: MessageService,
+                private popoverController: PopoverController
                ) { }
 
     ngOnInit() {
-        let obj = this.paramsService.get();
-        this.currentChat = obj.chat;
-        this.currentUser = obj.user;
+        this.currentChat = this.paramsService.get();
+        console.log(this.currentChat);
         this.messageService.messageQueue()
             .subscribe((msg: Message) => {
                 if(msg.chatId == this.currentChat.id) {
@@ -41,6 +42,20 @@ export class MessagesPage implements OnInit {
                     this.messages.push(msg);
                 }
             });
+    }
+
+    async openMenu() {
+        this.paramsService.set(this.currentChat);
+        const popOver = await this.popoverController.create({component: MenuComponent,
+                                                             showBackdrop: true});
+        popOver.onDidDismiss().then((obj) => {
+            if(obj.data && obj.data.user) {
+                // Added a new user
+                this.currentChat.participants.push(obj.data.user);
+            }
+        });
+
+        return await popOver.present();
     }
 
     sendMessage() {
@@ -54,8 +69,12 @@ export class MessagesPage implements OnInit {
             });
     }
 
-    getClasses(sender: string) {
-        if(sender == this.currentUser.id) {
+    getClasses(message: Message) {
+        console.log(message);
+        if(message && message.msgType == "event") {
+            // Check what kind of event
+            return 'event';
+        } else if(false) {
             return 'outgoing';
         } else {
             return 'incoming';

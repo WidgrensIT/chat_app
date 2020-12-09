@@ -1,14 +1,25 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Chat with {{ currentUser.username }}</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Chat with {{ currentChat.participants | joiner }}</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="openMenu()">
+        <ion-icon name="person-add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
   </ion-toolbar>
+
 </ion-header>
 
 <ion-content>
   <div class="chatbox">
     <div class="message-area">
-      <div class="message" *ngFor="let message of messages" [ngClass]="getClasses(message.id)">
-        <p>{{message.payload}}</p>
+      <div class="message" *ngFor="let message of messages" [ngClass]="getClasses(message)">
+        <p>{{message|json}}</p>
       </div>
     </div>
   </div>
