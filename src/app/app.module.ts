@@ -18,10 +18,9 @@ import { AuthInterceptor } from './helpers/auth-interceptor';
 
 // Services
 import { AuthService } from './services/auth.service';
-import { JoinerPipe } from './pipes/joiner.pipe';
 
 @NgModule({
-    declarations: [AppComponent, JoinerPipe],
+    declarations: [AppComponent],
     entryComponents: [],
     imports: [
         BrowserModule,

@@ -1,6 +1,8 @@
 .chatbox {
     bottom: 0;
     width: 100%;
+    overflow-y: scroll;
+
     .message-area {
         max-height: 90%;
         height: 90%;

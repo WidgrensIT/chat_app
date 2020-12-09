@@ -6,6 +6,7 @@ import { MenuComponent } from './menu/menu.component';
 import { ParamsService } from '../../../services/params.service';
 import { ChatService } from '../../../services/chat.service';
 import { MessageService } from '../../../services/message.service';
+import { AuthService } from '../../../services/auth.service';
 
 import { Message } from '../../../models/message';
 import { Chat } from '../../../models/chat';
@@ -29,16 +30,33 @@ export class MessagesPage implements OnInit {
                 private paramsService: ParamsService,
                 private chatService: ChatService,
                 private messageService: MessageService,
-                private popoverController: PopoverController
+                private popoverController: PopoverController,
+                private authService: AuthService
                ) { }
 
     ngOnInit() {
+        console.log("ngOnInit");
+        this.messages = [];
         this.currentChat = this.paramsService.get();
-        console.log(this.currentChat);
+        this.chatService.getArchive(this.currentChat)
+            .subscribe((msgs: Message[]) => {
+                this.messages = this.messages.concat(msgs);
+            });
+
         this.messageService.messageQueue()
             .subscribe((msg: Message) => {
                 if(msg.chatId == this.currentChat.id) {
                     // This is our chat
+                    console.log(msg);
+                    if(msg.type == "event") {
+                        let eventMsg = msg.payload.user.username;
+                        if(msg.action == "join") {
+                            eventMsg += " have joined the chat";
+                        } else if(msg.action == "leave") {
+                            eventMsg += " have left the chat";
+                        }
+                        msg.payload = eventMsg;
+                    }
                     this.messages.push(msg);
                 }
             });
@@ -51,6 +69,8 @@ export class MessagesPage implements OnInit {
         popOver.onDidDismiss().then((obj) => {
             if(obj.data && obj.data.user) {
                 // Added a new user
+                if(!this.currentChat.participants)
+                    this.currentChat.participants = [];
                 this.currentChat.participants.push(obj.data.user);
             }
         });
@@ -70,11 +90,10 @@ export class MessagesPage implements OnInit {
     }
 
     getClasses(message: Message) {
-        console.log(message);
-        if(message && message.msgType == "event") {
+        if(message && message.type == "event") {
             // Check what kind of event
             return 'event';
-        } else if(false) {
+        } else if(this.authService.currentUserValue.id == message.sender) {
             return 'outgoing';
         } else {
             return 'incoming';

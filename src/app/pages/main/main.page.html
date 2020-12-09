@@ -9,7 +9,7 @@
 
 <ion-content fullscreen>
   <ion-list>
-    <ion-item *ngFor="let contact of contacts" (click)="openChat(contact);">
+    <ion-item *ngFor="let contact of contacts; let i = index" (click)="openChat(contacts[i]);">
       <ion-avatar slot="start">
         <ngx-avatar gravatarId="{{contact.email}}"
                     name="{{contact.username}}"></ngx-avatar>

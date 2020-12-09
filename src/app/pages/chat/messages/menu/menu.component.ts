@@ -33,7 +33,8 @@ export class MenuComponent implements OnInit {
     ngOnInit() {
         this.chat = this.paramsService.get();
 
-        let includedUserIds = this.chat.participants.map((data) => data.id);
+        let participants = this.chat.participants || [];
+        let includedUserIds = participants.map((data) => data.id);
 
         this.userService.fetchUsers().subscribe((users) => {
             this.users = users.filter((user) => includedUserIds.indexOf(user.id) === -1);

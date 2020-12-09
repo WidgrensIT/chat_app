@@ -5,6 +5,7 @@ import { UserService } from '../../services/user.service';
 import { ChatService } from '../../services/chat.service';
 
 import { NavController } from '@ionic/angular';
+import { NgZone } from '@angular/core';
 
 import { ChatPage } from '../chat/chat.page';
 
@@ -26,6 +27,7 @@ export class MainPage implements OnInit {
 
     constructor(private userService: UserService,
                 private router: Router,
+                private ngZone: NgZone,
                 private navCtrl: NavController,
                 private paramsService: ParamsService,
                 private chatService: ChatService
@@ -38,11 +40,13 @@ export class MainPage implements OnInit {
     openChat(user: User) {
         let participants: Participant[] = [new Participant({id: user.id})];
         let newChat = new Chat({'name': user.username, 'description': '-', 'type': '1to1', 'participants': participants});
-
         this.chatService.createChat(newChat)
             .subscribe((data: Chat) => {
-                this.paramsService.set({user: user, chat: data});
-                this.router.navigate(['/tabs/chat/messages']);
+                this.chatService.getChat(data)
+                    .subscribe((chatData: Chat) => {
+                        this.paramsService.set(chatData);
+                        this.router.navigate(['/tabs/chat/messages']);
+                    });
             });
     }
 

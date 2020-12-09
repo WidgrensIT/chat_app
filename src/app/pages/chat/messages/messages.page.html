@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Chat with {{ currentChat.participants | joiner }}</ion-title>
+    <ion-title>Chat with {{ currentChat.name }}</ion-title>
 
     <ion-buttons slot="end">
       <ion-button (click)="openMenu()">
@@ -19,7 +19,7 @@
   <div class="chatbox">
     <div class="message-area">
       <div class="message" *ngFor="let message of messages" [ngClass]="getClasses(message)">
-        <p>{{message|json}}</p>
+        <p>{{message.payload}}</p>
       </div>
     </div>
   </div>

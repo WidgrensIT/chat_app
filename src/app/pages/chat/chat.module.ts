@@ -8,6 +8,7 @@ import { AvatarModule } from 'ngx-avatar';
 import { ChatPageRoutingModule } from './chat-routing.module';
 
 import { ChatPage } from './chat.page';
+import { JoinerPipe } from '../../pipes/joiner.pipe';
 
 @NgModule({
     imports: [
@@ -17,6 +18,6 @@ import { ChatPage } from './chat.page';
         AvatarModule,
         ChatPageRoutingModule
     ],
-    declarations: [ChatPage]
+    declarations: [ChatPage, JoinerPipe]
 })
 export class ChatPageModule {}
