@@ -1,0 +1,17 @@
+<ion-content padding>
+  <ion-list-header lines="full">
+    <ion-label>Bjud in vänner</ion-label>
+  </ion-list-header>
+  <ion-spinner *ngIf="loading"></ion-spinner>
+  <ion-list>
+    <ion-item *ngFor="let contact of users; let i = index;" (click)="addUser(users[i]);">
+      <ion-avatar slot="start">
+        <ngx-avatar gravatarId="{{contact.email}}"
+                    name="{{contact.username}}" size="45"></ngx-avatar>
+      </ion-avatar>
+      <ion-label>
+        <h3>{{contact.username}}</h3>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
