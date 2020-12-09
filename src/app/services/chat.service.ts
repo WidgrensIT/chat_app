@@ -59,15 +59,30 @@ export class ChatService {
         });
     }
 
-    createChat(chat: Chat): Observable<Chat> {
-        return this.http.post<any>(`${environment.apiUrlClient}/chat`, chat)
+    createChat(chatData: Chat): Observable<Chat> {
+        console.log("Creating chat: ", chatData);
+        return this.http.post<Chat>(`${environment.apiUrlClient}/chat`, chatData)
             .pipe(
                 map((return_obj) => new Chat({id: return_obj['id']}))
             );
     }
 
+    getChat(chat: Chat): Observable<Chat> {
+        return this.http.get<any>(`${environment.apiUrlClient}/chat/${chat.id}`)
+            .pipe(
+                map((return_obj) => return_obj)
+            );
+    }
+
     sendMessage(msg: Message): Observable<{id: string }> {
         return this.http.post<any>(`${environment.apiUrlClient}/message`, msg)
+            .pipe(
+                map((return_obj) => return_obj)
+            );
+    }
+
+    getArchive(chat: Chat): Observable<Message[]> {
+        return this.http.get<any>(`${environment.apiUrlClient}/chat/${chat.id}/message`)
             .pipe(
                 map((return_obj) => return_obj)
             );
