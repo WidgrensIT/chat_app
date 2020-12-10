@@ -45,7 +45,8 @@ export class MainPage implements OnInit {
                 this.chatService.getChat(data)
                     .subscribe((chatData: Chat) => {
                         this.paramsService.set(chatData);
-                        this.router.navigate(['/tabs/chat/messages']);
+                        this.ngZone.run(() => 
+                        this.router.navigate(['/tabs/chat/messages'], {replaceUrl: true, queryParams: {id: chatData.id}}));
                     });
             });
     }
