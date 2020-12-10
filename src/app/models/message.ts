@@ -5,6 +5,8 @@ export class Message {
     payload?: any;
     chatId: string;
     msgType?: string;
+    type?: string;
+    action?: string;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);
