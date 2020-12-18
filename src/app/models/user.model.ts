@@ -6,6 +6,7 @@ export class User {
     avatar?: string;
     password: string;
     access_token?: string;
+    checked?: boolean;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);

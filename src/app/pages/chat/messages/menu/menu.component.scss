@@ -1,0 +1,13 @@
+ion-avatar{
+    position: relative;
+
+    ion-icon.green {
+        color: green;
+    }
+    ion-icon{
+        position: absolute;
+        bottom: -5px;
+        right: -5px;
+
+    }
+}

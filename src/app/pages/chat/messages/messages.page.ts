@@ -26,6 +26,8 @@ export class MessagesPage implements OnInit {
 
     private sending: boolean = false;
 
+    private attachment: File = null;
+
     constructor(private route: ActivatedRoute,
                 private paramsService: ParamsService,
                 private chatService: ChatService,
@@ -62,6 +64,14 @@ export class MessagesPage implements OnInit {
             });
     }
 
+    attachFile(e) {
+        if (e.target.files.length == 0) {
+            return
+        }
+        let file: File = e.target.files[0];
+        this.attachment = file;
+    }
+
     async openMenu() {
         this.paramsService.set(this.currentChat);
         const popOver = await this.popoverController.create({component: MenuComponent,
@@ -81,10 +91,12 @@ export class MessagesPage implements OnInit {
     sendMessage() {
         this.sending = true;
         let msg = new Message({chatId: this.currentChat.id,
-                               payload: this.message});
+                               payload: this.message,
+                               attachment: this.attachment});
         this.chatService.sendMessage(msg)
             .subscribe((data: {id: string}) => {
                 this.message = "";
+                this.attachment = null;
                 this.sending = false;
             });
     }

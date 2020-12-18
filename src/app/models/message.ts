@@ -4,7 +4,9 @@ export class Message {
     timestamp?: string;
     payload?: any;
     chatId: string;
-    msgType?: string;
+    type?: string;
+    action?: string;
+    attachment?: File;
 
     constructor(values: Object = {}) {
         Object.assign(this, values);

@@ -27,6 +27,11 @@
   <div slot="fixed" class="chatbox">
     <div class="input-area">
       <form (submit)="sendMessage()" name="messageForm" #messageForm="ngForm">
+        <input #messageAttachment  type="file" accept="image/x-png,image/gif,image/jpeg"
+               name="myAttachment" (change)="attachFile($event)"  style = "display: none;"/>
+        <ion-button  class="attachment" shape="round"  fill="outline"  icon-only  item-right (click)="messageAttachment.click()">
+          <ion-icon  name="folder"></ion-icon>
+        </ion-button>
         <ion-input [disabled]="sending" type="text" name="message" id="message" [(ngModel)]="message" placeholder="Say something..."></ion-input>
         <button>
           <ion-icon name="send"></ion-icon>

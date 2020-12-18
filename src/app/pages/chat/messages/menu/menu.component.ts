@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
+import { Router } from '@angular/router';
+
 import { AuthService } from '../../../../services/auth.service';
 import { UserService } from '../../../../services/user.service';
 import { ParamsService } from '../../../../services/params.service';
@@ -23,7 +25,8 @@ export class MenuComponent implements OnInit {
                 private authService: AuthService,
                 private userService: UserService,
                 private paramsService: ParamsService,
-                private chatService: ChatService
+                private chatService: ChatService,
+                private router: Router
                ) {
 
     }
@@ -37,14 +40,31 @@ export class MenuComponent implements OnInit {
         let includedUserIds = participants.map((data) => data.id);
 
         this.userService.fetchUsers().subscribe((users) => {
-            this.users = users.filter((user) => includedUserIds.indexOf(user.id) === -1);
+            this.users = users.filter((user) => includedUserIds.indexOf(user.id) === -1)
+                .map((user) => { user.checked = false; return user; });
             this.loading = false;
         });
     }
 
     addUser(user: User) {
-        this.chatService.addParticipant(this.chat.id, user).subscribe((data) => {
-            this.popoverController.dismiss({'user': user});
-        });
+        user.checked = !user.checked;
+    }
+
+    createChat() {
+        let participants = this.users.filter((user) => user.checked);
+
+        let chat = new Chat({name: 'Groupchat',
+                             type: 'groupchat',
+                             description: 'Groupchat',
+                             participants: participants});
+
+        this.chatService.createChat(chat)
+            .subscribe((data: Chat) => {
+                this.chatService.getChat(data)
+                    .subscribe((chatData: Chat) => {
+                        this.paramsService.set(chatData);
+                        this.router.navigate(['/tabs/chat/messages']);
+                    });
+            });
     }
 }
