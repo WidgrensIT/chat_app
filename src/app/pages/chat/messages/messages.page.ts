@@ -12,6 +12,9 @@ import { Message } from '../../../models/message';
 import { Chat } from '../../../models/chat';
 import { User } from '../../../models/user.model';
 
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
+
 @Component({
     selector: 'app-messages',
     templateUrl: './messages.page.html',
@@ -21,7 +24,7 @@ export class MessagesPage implements OnInit {
 
     private currentChat: Chat;
     private message: string;
-
+    private title: string;
     private messages: Message[] = [];
 
     private sending: boolean = false;
@@ -29,22 +32,27 @@ export class MessagesPage implements OnInit {
     private attachment: File = null;
 
     constructor(private route: ActivatedRoute,
+                private router: Router,
+                private location: Location,
                 private paramsService: ParamsService,
                 private chatService: ChatService,
                 private messageService: MessageService,
                 private popoverController: PopoverController,
                 private authService: AuthService
-               ) { }
+               ) { console.log("constructor") }
+    
 
-    ngOnInit() {
-        console.log("ngOnInit");
+    ngOnInit() { console.log("ngOnInit")}
+    ionViewWillEnter() {
+        console.log("ionViewWillEnter");
         this.messages = [];
         this.currentChat = this.paramsService.get();
+        this.title = this.currentChat.name;
+        console.log(this.currentChat);
         this.chatService.getArchive(this.currentChat)
             .subscribe((msgs: Message[]) => {
                 this.messages = this.messages.concat(msgs);
             });
-
         this.messageService.messageQueue()
             .subscribe((msg: Message) => {
                 if(msg.chatId == this.currentChat.id) {
