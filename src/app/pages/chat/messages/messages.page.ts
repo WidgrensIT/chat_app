@@ -40,7 +40,7 @@ export class MessagesPage implements OnInit {
                 private popoverController: PopoverController,
                 private authService: AuthService
                ) { console.log("constructor") }
-    
+
 
     ngOnInit() { console.log("ngOnInit")}
     ionViewWillEnter() {
@@ -55,7 +55,7 @@ export class MessagesPage implements OnInit {
             });
         this.messageService.messageQueue()
             .subscribe((msg: Message) => {
-                if(msg.chatId == this.currentChat.id) {
+                if(msg.chat_id == this.currentChat.id) {
                     // This is our chat
                     console.log(msg);
                     if(msg.type == "event") {
@@ -85,11 +85,15 @@ export class MessagesPage implements OnInit {
         const popOver = await this.popoverController.create({component: MenuComponent,
                                                              showBackdrop: true});
         popOver.onDidDismiss().then((obj) => {
-            if(obj.data && obj.data.user) {
-                // Added a new user
-                if(!this.currentChat.participants)
-                    this.currentChat.participants = [];
-                this.currentChat.participants.push(obj.data.user);
+            console.log(obj);
+            if(obj.data) {
+                // New chat created so navigate to that one replacing stack
+                this.paramsService.set(obj.data);
+                console.log("Changing route");
+                this.router.navigate([], {
+                    skipLocationChange: true
+                });
+                //this.router.navigate(['/tabs/chat/messages'], {replaceUrl: true, queryParams: {id: obj.data.id}});
             }
         });
 
@@ -98,7 +102,7 @@ export class MessagesPage implements OnInit {
 
     sendMessage() {
         this.sending = true;
-        let msg = new Message({chatId: this.currentChat.id,
+        let msg = new Message({chat_id: this.currentChat.id,
                                payload: this.message,
                                attachment: this.attachment});
         this.chatService.sendMessage(msg)

@@ -18,17 +18,17 @@ export class MessageService {
     }
 
     push(message: Message) {
-        if(this.messages[message.chatId] !== undefined) {
-            this.messages[message.chatId].push(message);
+        if(this.messages[message.chat_id] !== undefined) {
+            this.messages[message.chat_id].push(message);
         } else {
-            this.messages[message.chatId] = [message];
+            this.messages[message.chat_id] = [message];
         }
         this.chats$.next(message);
     }
 
-    fetch(chatId: string): Message[] {
-        if(this.messages[chatId] !== undefined)
-            return this.messages[chatId];
+    fetch(chat_id: string): Message[] {
+        if(this.messages[chat_id] !== undefined)
+            return this.messages[chat_id];
         return [];
     }
 }

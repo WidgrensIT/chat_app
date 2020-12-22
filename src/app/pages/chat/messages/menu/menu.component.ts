@@ -37,6 +37,7 @@ export class MenuComponent implements OnInit {
         this.chat = this.paramsService.get();
 
         let participants = this.chat.participants || [];
+
         let includedUserIds = participants.map((data) => data.id);
 
         this.userService.fetchUsers().subscribe((users) => {
@@ -51,7 +52,9 @@ export class MenuComponent implements OnInit {
     }
 
     createChat() {
-        let participants = this.users.filter((user) => user.checked);
+        let participants = this.users.filter((user) => user.checked)
+            .concat(this.chat.participants || []);
+
 
         let chat = new Chat({name: 'Groupchat',
                              type: 'groupchat',
@@ -62,8 +65,7 @@ export class MenuComponent implements OnInit {
             .subscribe((data: Chat) => {
                 this.chatService.getChat(data)
                     .subscribe((chatData: Chat) => {
-                        this.paramsService.set(chatData);
-                        this.router.navigate(['/tabs/chat/messages']);
+                        this.popoverController.dismiss(chatData);
                     });
             });
     }

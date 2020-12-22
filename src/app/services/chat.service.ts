@@ -88,8 +88,8 @@ export class ChatService {
             );
     }
 
-    addParticipant(chatId: string, user: User): Observable<any> {
-        return this.http.post<any>(`${environment.apiUrlClient}/chat/${chatId}/participant`, {id: user.id})
+    addParticipant(chat_id: string, user: User): Observable<any> {
+        return this.http.post<any>(`${environment.apiUrlClient}/chat/${chat_id}/participant`, {id: user.id})
             .pipe(
                 map((return_obj) => return_obj)
             );

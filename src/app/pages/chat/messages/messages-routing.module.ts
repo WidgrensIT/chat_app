@@ -8,7 +8,8 @@ const routes: Routes = [
     {
         path: '',
         component: MessagesPage,
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        runGuardsAndResolvers: 'always'
     }
 ];
 

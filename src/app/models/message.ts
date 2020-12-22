@@ -3,7 +3,7 @@ export class Message {
     sender?: string;
     timestamp?: string;
     payload?: any;
-    chatId: string;
+    chat_id: string;
     type?: string;
     action?: string;
     attachment?: File;
