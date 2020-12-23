@@ -19,6 +19,6 @@ import { JoinerPipe } from '../../../pipes/joiner.pipe';
         AvatarModule,
         MessagesPageRoutingModule
     ],
-    declarations: [MessagesPage, MenuComponent, JoinerPipe]
+    declarations: [MessagesPage, MenuComponent]
 })
 export class MessagesPageModule {}

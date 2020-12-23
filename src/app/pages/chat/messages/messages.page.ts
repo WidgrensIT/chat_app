@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, IonContent } from '@ionic/angular';
 import { MenuComponent } from './menu/menu.component';
 
 import { ParamsService } from '../../../services/params.service';
@@ -22,6 +22,8 @@ import { Location } from '@angular/common';
 })
 export class MessagesPage implements OnInit {
 
+    @ViewChild(IonContent) private chatArea: IonContent;
+
     private currentChat: Chat;
     private message: string;
     private title: string;
@@ -29,7 +31,9 @@ export class MessagesPage implements OnInit {
 
     private sending: boolean = false;
 
-    private attachment: File = null;
+    private attachments: File[] = [];
+
+    private participants: any[] = [];
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -39,25 +43,35 @@ export class MessagesPage implements OnInit {
                 private messageService: MessageService,
                 private popoverController: PopoverController,
                 private authService: AuthService
-               ) { console.log("constructor") }
+               ) {
+    }
 
 
-    ngOnInit() { console.log("ngOnInit")}
+    ngOnInit() {
+        this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    }
+
     ionViewWillEnter() {
-        console.log("ionViewWillEnter");
         this.messages = [];
         this.currentChat = this.paramsService.get();
         this.title = this.currentChat.name;
-        console.log(this.currentChat);
+        let currentUser = this.authService.currentUserValue;
+        this.participants = this.currentChat.participants;
+        this.participants.push(currentUser);
+
         this.chatService.getArchive(this.currentChat)
             .subscribe((msgs: Message[]) => {
+                msgs = msgs.map((msg) => {
+                    msg.from_user = this.participants.find((user) => user.id == msg.sender) || undefined;
+                    return msg;
+                });
                 this.messages = this.messages.concat(msgs);
             });
+
         this.messageService.messageQueue()
             .subscribe((msg: Message) => {
                 if(msg.chat_id == this.currentChat.id) {
                     // This is our chat
-                    console.log(msg);
                     if(msg.type == "event") {
                         let eventMsg = msg.payload.user.username;
                         if(msg.action == "join") {
@@ -67,9 +81,13 @@ export class MessagesPage implements OnInit {
                         }
                         msg.payload = eventMsg;
                     }
-                    this.messages.push(msg);
+                    this.addMessage(msg);
                 }
             });
+    }
+
+    ionViewDidEnter() {
+        this.chatArea.scrollToBottom(300);
     }
 
     attachFile(e) {
@@ -77,7 +95,14 @@ export class MessagesPage implements OnInit {
             return
         }
         let file: File = e.target.files[0];
-        this.attachment = file;
+        this.attachments.push(file);
+        console.log(this.attachments);
+    }
+
+    addMessage(msg: Message) {
+        msg.from_user = this.participants.find((user) => user.id == msg.sender);
+        this.messages.push(msg);
+        this.chatArea.scrollToBottom(30);
     }
 
     async openMenu() {
@@ -85,15 +110,10 @@ export class MessagesPage implements OnInit {
         const popOver = await this.popoverController.create({component: MenuComponent,
                                                              showBackdrop: true});
         popOver.onDidDismiss().then((obj) => {
-            console.log(obj);
             if(obj.data) {
                 // New chat created so navigate to that one replacing stack
                 this.paramsService.set(obj.data);
-                console.log("Changing route");
-                this.router.navigate([], {
-                    skipLocationChange: true
-                });
-                //this.router.navigate(['/tabs/chat/messages'], {replaceUrl: true, queryParams: {id: obj.data.id}});
+                this.router.navigate(['/tabs/chat']).then(() => { this.router.navigate(['/tabs/chat/messages']); });
             }
         });
 

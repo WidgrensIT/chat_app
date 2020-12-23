@@ -10,7 +10,8 @@ const routes: Routes = [
     {
         path: '',
         loadChildren: () => import('./pages/tabs/tabs.module').then( m => m.TabsPageModule),
-        canActivate: [AuthGuard]
+        canActivate: [AuthGuard],
+        runGuardsAndResolvers: 'always'
     },
     {
         path: 'signup',

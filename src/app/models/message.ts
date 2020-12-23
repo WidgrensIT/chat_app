@@ -1,6 +1,9 @@
+import { User } from './user.model';
+
 export class Message {
     id?: string;
     sender?: string;
+    from_user?: User;
     timestamp?: string;
     payload?: any;
     chat_id: string;

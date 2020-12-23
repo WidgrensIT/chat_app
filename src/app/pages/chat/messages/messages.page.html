@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Chat with {{ title }}</ion-title>
+    <ion-title>{{ title }}</ion-title>
 
     <ion-buttons slot="end">
       <ion-button (click)="openMenu()">
@@ -20,18 +20,29 @@
     <div class="message-area">
       <div class="message" *ngFor="let message of messages" [ngClass]="getClasses(message)">
         <p>{{message.payload}}</p>
+        <ion-avatar *ngIf="message.from_user">
+          <ngx-avatar gravatarId="{{message.from_user.email}}"
+                      name="{{message.from_user.username}}" size="20"></ngx-avatar>
+        </ion-avatar>
       </div>
     </div>
   </div>
 
-  <div slot="fixed" class="chatbox">
+  <div *ngFor="let attachment of attachments">
+    <div>
+      <ion-icon name="document-outline"></ion-icon>
+    </div>
+  </div>
+
+
+  <div slot="fixed" class="chatbox chatbox-bottom">
     <div class="input-area">
       <form (submit)="sendMessage()" name="messageForm" #messageForm="ngForm">
+        <!-- Attachments -->
         <input #messageAttachment  type="file" accept="image/x-png,image/gif,image/jpeg"
                name="myAttachment" (change)="attachFile($event)"  style = "display: none;"/>
-        <ion-button  class="attachment" shape="round"  fill="outline"  icon-only  item-right (click)="messageAttachment.click()">
-          <ion-icon  name="folder"></ion-icon>
-        </ion-button>
+        <p><ion-icon name="folder" class="attachmentBtn" (click)="messageAttachment.click()"></ion-icon></p>
+        <!-- End attachments -->
         <ion-input [disabled]="sending" type="text" name="message" id="message" [(ngModel)]="message" placeholder="Say something..."></ion-input>
         <button>
           <ion-icon name="send"></ion-icon>
