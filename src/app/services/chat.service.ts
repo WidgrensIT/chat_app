@@ -81,6 +81,25 @@ export class ChatService {
             );
     }
 
+
+    sendAttachments(msg: Message, attachments: File[]): Observable<any> {
+        const formData = new FormData();
+        const options: any = {};
+
+        for(const file of attachments) {
+            formData.append(file.name, file);
+        }
+
+        Object.keys(msg).forEach(key => {
+            formData.append(key, msg[key]);
+        });
+
+        return this.http.post<any>(`${environment.apiUrlClient}/message`, formData, options)
+            .pipe(
+                map((return_obj) => return_obj)
+            );
+    }
+
     getArchive(chat: Chat): Observable<Message[]> {
         return this.http.get<any>(`${environment.apiUrlClient}/chat/${chat.id}/message`)
             .pipe(

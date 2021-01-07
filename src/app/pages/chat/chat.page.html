@@ -31,7 +31,8 @@
           </ion-avatar>
           <ion-label>
             <h2>{{chat.name}}</h2>
-            <p>{{chat.participants | joiner}}
+            <p *ngIf="chat.participants.length > 1">{{chat.participants | joiner}}</p>
+            <p *ngIf="chat.participants.length <= 1">Chat with {{chat.participants[0].username}}</p>
           </ion-label>
         </ion-item>
       </ion-list>

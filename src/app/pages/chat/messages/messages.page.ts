@@ -8,6 +8,8 @@ import { ChatService } from '../../../services/chat.service';
 import { MessageService } from '../../../services/message.service';
 import { AuthService } from '../../../services/auth.service';
 
+import { environment } from '../../../../environments/environment';
+
 import { Message } from '../../../models/message';
 import { Chat } from '../../../models/chat';
 import { User } from '../../../models/user.model';
@@ -34,6 +36,8 @@ export class MessagesPage implements OnInit {
     private attachments: File[] = [];
 
     private participants: any[] = [];
+
+    private baseUrl = environment.apiUrl;
 
     constructor(private route: ActivatedRoute,
                 private router: Router,
@@ -124,13 +128,22 @@ export class MessagesPage implements OnInit {
         this.sending = true;
         let msg = new Message({chat_id: this.currentChat.id,
                                payload: this.message,
-                               attachment: this.attachment});
-        this.chatService.sendMessage(msg)
-            .subscribe((data: {id: string}) => {
-                this.message = "";
-                this.attachment = null;
-                this.sending = false;
-            });
+                               attachments: this.attachments});
+        if(this.attachments.length > 0) {
+            this.chatService.sendAttachments(msg, this.attachments)
+                .subscribe((data: {id: string}) => {
+                    this.message = "";
+                    this.attachments = [];
+                    this.sending = false;
+                });
+        } else {
+            this.chatService.sendMessage(msg)
+                .subscribe((data: {id: string}) => {
+                    this.message = "";
+                    this.attachments = [];
+                    this.sending = false;
+                });
+        }
     }
 
     getClasses(message: Message) {

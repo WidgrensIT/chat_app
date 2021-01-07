@@ -19,7 +19,10 @@
   <div class="chatbox">
     <div class="message-area">
       <div class="message" *ngFor="let message of messages" [ngClass]="getClasses(message)">
-        <p>{{message.payload}}</p>
+
+        <p *ngIf="message.action == 'message'">{{message.payload}}</p>
+        <img *ngIf="message.action == 'attachments' && message.payload.mime.indexOf('image/jpeg') != -1" src="{{baseUrl}}/{{message.payload.url}}" />
+        <a *ngIf="message.action == 'attachments' && message.payload.mime.indexOf('image/jpeg') == -1" href="{{baseUrl}}/{{message.payload.url}}"><ion-icon name="document"></ion-icon></a>
         <ion-avatar *ngIf="message.from_user">
           <ngx-avatar gravatarId="{{message.from_user.email}}"
                       name="{{message.from_user.username}}" size="20"></ngx-avatar>
