@@ -60,7 +60,9 @@ export class MessagesPage implements OnInit {
         this.currentChat = this.paramsService.get();
         this.title = this.currentChat.name;
         let currentUser = this.authService.currentUserValue;
-        this.participants = this.currentChat.participants;
+        if (this.currentChat.participants) {
+            this.participants = this.currentChat.participants;
+        }
         this.participants.push(currentUser);
 
         this.chatService.getArchive(this.currentChat)
