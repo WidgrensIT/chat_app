@@ -23,11 +23,14 @@ export class ChatPage implements OnInit {
                 private paramsService: ParamsService,
                 private router: Router
                ) {}
-
     ngOnInit() {
+    }
+
+    ionViewWillEnter() {
         this.chatManagementService.getChats().subscribe((data) => {
             this.loading = false;
-            this.chats = data
+            this.chats = data;
+            console.log(data);
         });
     }
 

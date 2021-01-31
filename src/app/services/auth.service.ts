@@ -14,7 +14,7 @@ import { User } from '../models/user.model';
     providedIn: 'root'
 })
 export class AuthService {
-    private currentUserSubject: BehaviorSubject<User>;
+    public currentUserSubject: BehaviorSubject<User> = new BehaviorSubject<User>(null);
     public currentUser: Observable<User>;
 
     constructor(private http: HttpClient) {
@@ -25,9 +25,7 @@ export class AuthService {
     }
 
     public get currentUserValue(): User {
-        if(this.currentUserSubject) {
-            return this.currentUserSubject.value;
-        }
+        return this.currentUserSubject.getValue();
     }
 
     login(username: string, password: string) {

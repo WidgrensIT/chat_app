@@ -69,6 +69,11 @@ export class MessagesPage implements OnInit {
             .subscribe((msgs: Message[]) => {
                 msgs = msgs.map((msg) => {
                     msg.from_user = this.participants.find((user) => user.id == msg.sender) || undefined;
+                    if(msg.payload && msg.payload.mime) {
+                        msg.action = 'attachments';
+                    } else {
+                        msg.action = 'message';
+                    }
                     return msg;
                 });
                 this.messages = this.messages.concat(msgs);
@@ -112,6 +117,7 @@ export class MessagesPage implements OnInit {
     }
 
     async openMenu() {
+        console.log("OK");
         this.paramsService.set(this.currentChat);
         const popOver = await this.popoverController.create({component: MenuComponent,
                                                              showBackdrop: true});
