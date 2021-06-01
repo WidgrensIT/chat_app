@@ -6,7 +6,7 @@ EXPOSE 8100
 WORKDIR /app
 
 
-CMD ["npm", "install", "@angular/cli", "--save"]
+CMD ["npm", "install", "@angular/cli", "-g"]
 CMD ["npm", "install"]
 
 CMD ["ionic", "serve"]
