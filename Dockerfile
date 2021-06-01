@@ -5,8 +5,7 @@ COPY . /app
 EXPOSE 8100
 WORKDIR /app
 
-
-CMD ["npm", "install", "@angular/cli", "-g"]
-CMD ["npm", "install"]
+RUN npm install @angular/cli -git
+RUN npm install
 
 CMD ["ionic", "serve"]
