@@ -82,17 +82,20 @@ export class MessagesPage implements OnInit {
         this.messageService.messageQueue()
             .subscribe((msg: Message) => {
                 if(msg.chat_id == this.currentChat.id) {
-                    // This is our chat
-                    if(msg.type == "event") {
-                        let eventMsg = msg.payload.user.username;
-                        if(msg.action == "join") {
-                            eventMsg += " have joined the chat";
-                        } else if(msg.action == "leave") {
-                            eventMsg += " have left the chat";
+                    // Check that we don't have any duplicates
+                    if(!this.messages.some((stored_msg) => stored_msg.id == msg.id)) {
+                        // This is our chat
+                        if(msg.type == "event") {
+                            let eventMsg = msg.payload.user.username;
+                            if(msg.action == "join") {
+                                eventMsg += " have joined the chat";
+                            } else if(msg.action == "leave") {
+                                eventMsg += " have left the chat";
+                            }
+                            msg.payload = eventMsg;
                         }
-                        msg.payload = eventMsg;
+                        this.addMessage(msg);
                     }
-                    this.addMessage(msg);
                 }
             });
     }
@@ -107,7 +110,6 @@ export class MessagesPage implements OnInit {
         }
         let file: File = e.target.files[0];
         this.attachments.push(file);
-        console.log(this.attachments);
     }
 
     addMessage(msg: Message) {
@@ -117,7 +119,6 @@ export class MessagesPage implements OnInit {
     }
 
     async openMenu() {
-        console.log("OK");
         this.paramsService.set(this.currentChat);
         const popOver = await this.popoverController.create({component: MenuComponent,
                                                              showBackdrop: true});
